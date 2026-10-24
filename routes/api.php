@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ArtistProfileController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\LabelApplicationController;
+use App\Http\Controllers\Api\LabelCertificationController;
 use App\Http\Controllers\Api\LabelDiscoveryController;
 use App\Http\Controllers\Api\LabelInvitationController;
 use App\Http\Controllers\Api\LabelProfileController;
@@ -113,6 +114,8 @@ Route::middleware([
         '/labels/{user}/status',
         [AdminLabelController::class, 'updateStatus']
     );
+
+    Route::patch('/labels/{user}/certification/revoke', [AdminLabelController::class, 'revokeCertification']);
 });
 
 // Artist Profile routes
@@ -179,5 +182,14 @@ Route::middleware(['auth:sanctum', 'email.verified'])->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/points/purchase', [PointPurchaseController::class, 'initialize']);
     Route::post('/points/verify', [PointPurchaseController::class, 'verify']);
+
+});
+
+// Annual label certification payment routes
+
+Route::middleware(['auth:sanctum', 'email.verified'])->group(function () {
+    Route::post('/label/certification/purchase', [LabelCertificationController::class, 'initialize']);
+
+    Route::post('/label/certification/verify', [LabelCertificationController::class, 'verify']);
 
 });

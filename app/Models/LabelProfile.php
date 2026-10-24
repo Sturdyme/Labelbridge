@@ -20,6 +20,9 @@ class LabelProfile extends Model
         'office_city',
         'office_state',
         'office_country',
+        'certification_status',
+        'certified_at',
+        'certification_expires_at',
     ];
 
     protected function casts(): array
@@ -40,5 +43,10 @@ class LabelProfile extends Model
    public function applications(): HasMany
 {
     return $this->hasMany(LabelApplication::class);
+}
+
+  public function certificationPurchases(): HasMany
+{
+    return $this->hasMany(LabelCertificationPurchase::class);
 }
 }

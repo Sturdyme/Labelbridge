@@ -76,4 +76,34 @@ class AdminLabelController extends Controller
             
         ]);
     }
+
+    public function revokeCertification(User $user): JsonResponse
+    {
+        if ($user->role !== 'label') {
+            return response()->json([
+                'message' => 'This account is not a label.'
+            ], 422);
+        }
+
+        $labelProfile = \App\Models\LabelProfile::where(
+            'user_id',
+            $user->id
+        )->first();
+
+        if (! $labelProfile) {
+            return response()->json([
+                'message' => 'Label profile not found.'
+            ], 404);
+        }
+
+        $labelProfile->update([
+            'certification_status' => 'revoked',
+        ]);
+
+        return response()->json([
+            'message' => 'Label certification revoked successfully.',
+            'certification_status' => 'revoked',
+            'label_name' => $labelProfile->label_name,
+        ]);
+    }
 }
