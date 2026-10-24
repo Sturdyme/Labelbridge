@@ -19,6 +19,7 @@ if ($user->role === 'label' && $user->label_status !== 'approved') {
     ], 403);
 }
 
+
 if (!in_array($user->role, ['artist', 'label'], true)) {
     return response()->json([
         'message' => 'Only artists and approved labels can browse artist profiles.',
@@ -36,12 +37,18 @@ if (!in_array($user->role, ['artist', 'label'], true)) {
 
     $socialVisibilityActive = $artistProfile->social_visibility_expires_at !== null && $artistProfile->social_visibility_expires_at->isFuture();
 
-    if ($socialVisibilityActive) {
-        $data['social_handle'] = $artistProfile->social_handles;
-    }
-    return response()->json([
-        'profile' => $data
-    ]);
+  if (
+    $user->role === 'artist'
+    && $user->id !== $artistProfile->user_id
+    && $socialVisibilityActive
+) {
+    $data['social_handle'] = $artistProfile->social_handles;
+}
+
+  return response()->json([
+    'profile' => $data,
+  ]);
+
   }
 
   // View a label's public without private office details
@@ -52,6 +59,7 @@ if (!in_array($user->role, ['artist', 'label'], true)) {
             'message' => 'Only artist can browse label profiles.'
         ], 403);
     }
+
 
     $isCertified = $labelProfile->user?->label_status === 'approved' && $labelProfile->certification_status === 'active' && $labelProfile->certification_expires_at !== null && $labelProfile->certification_expires_at->isFuture();
 
