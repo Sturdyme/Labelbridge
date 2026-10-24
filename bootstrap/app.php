@@ -21,10 +21,17 @@ return Application::configure(basePath: dirname(__DIR__))
             'label.approved' => EnsureLabelIsApproved::class,
             'admin' => EnsureAdmin::class,
         ]);
+
+        $middleware->redirectGuestsTo(
+            fn (Request $request): ?string =>
+                $request->is('api/*') || $request->expectsJson()
+                    ? null
+                    : route('login')
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request, Throwable $exception): bool =>
+            fn (Request $request, \Throwable $exception): bool =>
                 $request->is('api/*') || $request->expectsJson(),
         );
     })

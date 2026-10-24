@@ -22,7 +22,7 @@ class LabelDiscoveryController extends Controller
        ->whereHas('user', function ($query) {
         $query->where('label_status', 'approved');
        })  
-       ->with('user:id, label_status')
+       ->with('user:id,label_status')
        ->latest()
        ->get()
        ->map(function (LabelProfile $label) {
