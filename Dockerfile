@@ -11,7 +11,9 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j"$(nproc)" \
        pdo_pgsql mbstring bcmath gd intl zip opcache \
     && a2enmod rewrite headers \
-    && sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
+&& sed -ri 's/Listen 80/Listen 10000/' /etc/apache2/ports.conf \
+&& sed -ri 's/<VirtualHost \*:80>/<VirtualHost *:10000>/' /etc/apache2/sites-available/*.conf \
+&& sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
        /etc/apache2/sites-available/*.conf \
     && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' \
        /etc/apache2/apache2.conf \
@@ -40,6 +42,6 @@ RUN npm run build \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R ug+rwx storage bootstrap/cache
 
-EXPOSE 80
+EXPOSE 10000
 
 CMD ["apache2-foreground"]
