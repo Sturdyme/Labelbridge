@@ -115,6 +115,8 @@ Route::middleware([
         [AdminLabelController::class, 'updateStatus']
     );
 
+    
+
     Route::patch('/labels/{user}/certification/revoke', [AdminLabelController::class, 'revokeCertification']);
 });
 
@@ -192,4 +194,10 @@ Route::middleware(['auth:sanctum', 'email.verified'])->group(function () {
 
     Route::post('/label/certification/verify', [LabelCertificationController::class, 'verify']);
 
+});
+
+Route::get('/diagnostic-status', function () {
+    return response()->json([
+        'message' => 'Explicit status test',
+    ], 418);
 });
