@@ -195,23 +195,3 @@ Route::middleware(['auth:sanctum', 'email.verified'])->group(function () {
 
 });
 
-Route::get('/diagnostic-status', function () {
-    return response()->json([
-        'message' => 'Explicit status test',
-    ], 418);
-});
-
-Route::get('/diagnostic-headers', function () {
-    $file = null;
-    $line = null;
-
-    $sent = headers_sent($file, $line);
-
-    return response()->json([
-        'headers_sent_before_response' => $sent,
-        'output_file' => $file,
-        'output_line' => $line,
-        'headers_before_response' => headers_list(),
-        'output_buffers' => ob_get_status(true),
-    ]);
-});
